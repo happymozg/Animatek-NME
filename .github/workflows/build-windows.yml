@@ -1,0 +1,28 @@
+name: Build Windows Application
+
+on:
+  workflow_dispatch: # Позволяет запускать сборку вручную кнопкой в интерфейсе
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-2022 # Запускает чистую виртуальную машину Windows Server 2022
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Важно: автоматически скачивает встроенную библиотеку JUCE
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Project
+        run: cmake --build build --config Release --parallel
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Animatek-NME-Windows
+          path: build/Animatek-NME_artefacts/Release/
+
